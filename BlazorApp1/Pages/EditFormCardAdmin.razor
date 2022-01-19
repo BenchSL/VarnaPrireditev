@@ -1,0 +1,53 @@
+﻿@page "/EditFormCardAdmin"
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using BlazorApp1.Database
+@using System.Security.Policy
+@inject FormCardService FormService
+@inject NavigationManager navigation
+
+<h1>Oddane forme</h1>
+
+<p>Tukaj lahko pogledate oddane forme</p>
+
+<div class="card-deck">
+    @foreach(var form in Forms)
+    {
+        <div class="card m-3" style="min-width: 18rem; max-width:30.5%;">
+            <div class="card-header">
+               <h3>Naslov: </h3><h3> @form.Title</h3>
+             </div>
+             <div class="m-3">
+               <h3>Serijska prejšnje forme: @form.IdForm</h3>
+             </div>
+             <div class="m-3">
+               <h3>Domači naslov: @form.Address</h3>
+             </div>
+             <div class="m-3">
+               <h3>Status: @form.Status</h3>
+             </div>
+             <div class="card-footer text-center">
+                 <a href="@($"formcarddetails/{form.Id}")" class="btn btn-primary m-1">Pregled</a>
+             </div>
+        </div>
+    }
+</div>
+
+
+@code {
+    private List<FormCard> Forms = new List<FormCard>();
+
+    private string IdForm { get; set; }
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Forms = (await FormService.GetFormsCard()).ToList();
+    }
+    
+}

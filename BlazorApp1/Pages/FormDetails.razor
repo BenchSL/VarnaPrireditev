@@ -1,0 +1,68 @@
+﻿@page "/formdetails/{Id}"
+
+@using BlazorApp1.Services
+@using BlazorApp1.Models
+@using BlazorApp1.Database
+@inject FormInterService FormService
+@inject NavigationManager navigation
+@inject InboxService inboxService
+
+<div class="row justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Forma.FormName</h1>
+            </div>
+            <div class="card-body text-center">
+                <h4>Id forme: @Forma.Id</h4>
+                <h4>Id uporabnika: @Forma.IdUser</h4>
+                <h4>Serijska st.: @Forma.SerialNumber</h4>
+                <h4>Izkušnje: @Forma.Experience</h4>
+                <h4>Tip prireditve: @Forma.EventType</h4>
+                <h4>Izobrazba: @Forma.UserEducation</h4>
+                <h4>Status: @Forma.Status</h4>
+            </div>
+            <div class="card-footer text-center">
+                <a href="#" class="btn btn-outline-success" @onclick="SubmitFormApproved">Sprejmi</a>
+                <a href="#" class="btn btn-danger" @onclick="SubmitFormDenied">Zavrni</a>
+            </div>
+            <textarea rows="5"
+                   @bind="MyText" />
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private string MyText { get; set; }
+
+    public Form Forma { get; set; } = new Form();
+
+    private Inbox inbox { get; set; } = new Inbox();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Forma = await FormService.GetForm(Convert.ToString(Id));
+    }
+
+    protected async Task SubmitFormApproved()
+    {
+        var result = await FormService.UpdateFormApproved(Forma);
+        inbox.message = MyText;
+        inbox.SerijskaSt = Forma.SerialNumber;
+        var result2 = await inboxService.AddInbox(inbox);
+    }
+
+    protected async Task SubmitFormDenied()
+    {
+        var result = await FormService.UpdateFormDenied(Forma);
+        inbox.message = MyText;
+        inbox.SerijskaSt = Forma.SerialNumber;
+        var result2 = await inboxService.AddInbox(inbox);
+    }
+
+}

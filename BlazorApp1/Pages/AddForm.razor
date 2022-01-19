@@ -1,0 +1,62 @@
+﻿@page "/AddForm"
+
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@inject FormInterService FormService
+
+
+<div class="card">
+    <h4 class="card-header">Dodajanje vlog</h4>
+    <div class="card-body">
+     <form>
+      <div class="form-group">
+       <label for="Title">Naslov</label><br>
+       <input @bind:event="oninput" @bind="Title" class="form-control"><br>
+    </div>
+    <div class="form-group">
+       <label for="Education">Izobrazba</label><br>
+       <input @bind:event="oninput" @bind="Educ" class="form-control">
+    </div>
+    <div class="form-group">
+       <label for="Experience">Izkušnje</label><br>
+       <input @bind:event="oninput" @bind="Exp" class="form-control"><br>
+    </div>
+    <div class="form-group">
+       <label for="Type">Tip prireditve</label><br>
+       <input @bind:event="oninput" @bind="TypeEven" class="form-control"><br>
+    </div>
+    <div class="form-group">
+       <label for="UserId">Vaš Id</label><br>
+       <input @bind:event="oninput" @bind="userId" class="form-control"><br>
+    </div>
+        <input type="submit" class="btn btn-primary" @onclick="HandleValidSubmitForm" value="Potrdi">
+     </form>
+    </div>
+</div>
+
+@code {
+    private string Title { get; set; }
+    private string Educ { get; set; }
+    private string Exp { get; set; }
+    private string TypeEven {get; set;}
+    private int userId { get; set; }
+
+    private Form model = new();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async void HandleValidSubmitForm()
+    {
+        model.FormName = Title;
+        model.UserEducation = Educ;
+        model.EventType = TypeEven;
+        model.Experience = Exp;
+        model.IdUser = userId;
+
+        await FormService.AddForm(model);
+    }
+}

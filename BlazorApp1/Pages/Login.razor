@@ -1,0 +1,60 @@
+﻿@page "/LoginPage"
+
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using BlazorApp1.Database
+@inject UserService userService
+@inject NavigationManager Navigation
+@inject SessionService Session
+
+<div class="card">
+    <h4 class="card-header">Login</h4>
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label>Username</label>
+                <input @bind:event="oninput" @bind="UserName" class="form-control" />            
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input @bind:event="oninput" @bind="Password" class="form-control" />
+            </div>
+            <butto class="btn btn-primary" @onclick="HandleValidLogin">
+                Prijava
+            </butto>
+        </form>
+    </div>
+</div>
+   
+
+
+
+@code {
+    private FormContext Db = new FormContext();
+
+    private string UserName { get; set; }
+    private string Password { get; set; }
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async Task HandleValidLogin()
+    {
+        bool Auth = await userService.LoginUser(UserName, Password);
+
+        if(Auth == true)
+        {
+            Session.SessionName = UserName;
+            Navigation.NavigateTo("/");
+        }
+
+        else if(Auth == false)
+        {
+            Navigation.NavigateTo("/LoginPage");
+        }
+    }
+
+}

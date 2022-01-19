@@ -1,0 +1,51 @@
+﻿@page "/AddSurvey"
+
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+
+@inject SurveyService SurServic
+
+<div class="card">
+    <h4 class="card-header">Dodajanje ankete</h4>
+    <div class="card-body">
+     <form>
+      <div class="form-group">
+       <label for="Title">Naslov</label><br>
+       <input @bind:event="oninput" @bind="NameSurvey" class="form-control"><br>
+    </div>
+    <div class="form-group">
+       <label for="Education">Ocena</label><br>
+       <input @bind:event="oninput" @bind="Rating" class="form-control">
+    </div>
+    <div class="form-group">
+       <label for="Experience">Uporabniška izkušnja</label><br>
+       <input @bind:event="oninput" @bind="Preview" class="form-control"><br>
+    </div>
+        <input type="submit" class="btn btn-primary" @onclick="HandleValidSubmitSurvey" value="Potrdi">
+     </form>
+    </div>
+</div>
+
+@code {
+    private string NameSurvey { get; set; }
+    private string Rating { get; set; }
+    private string Preview { get; set; }
+    private DateTime DateSub { get; set; }
+
+    private Survey model = new();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async void HandleValidSubmitSurvey()
+    {
+        model.NameSurvey = NameSurvey;
+        model.Rating = Rating;
+        model.Preview = Preview;
+        model.DateSub = new DateTime(2022, 01, 05);
+
+        await SurServic.AddSurvey(model);
+    }
+}

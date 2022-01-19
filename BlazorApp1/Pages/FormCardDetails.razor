@@ -1,0 +1,60 @@
+﻿@page "/formcarddetails/{Id}"
+
+@using BlazorApp1.Services
+@using BlazorApp1.Models
+@using BlazorApp1.Database
+@inject FormCardService FormService
+@inject NavigationManager navigation
+
+<div class="row justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Forma.Title</h1>
+            </div>
+            <div class="card-body text-center">
+                <h4>Id forme: @Forma.Id</h4>
+                <h4>Id prejšnje forme: @Forma.IdForm</h4>
+                <h4>Serijska st.: @Forma.SerialNumber</h4>
+                <h4>Domači naslov: @Forma.Address</h4>
+                <h4>Status: @Forma.Status</h4>
+            </div>
+            <div class="card-footer text-center">
+                <a href="#" class="btn btn-outline-success" @onclick="SubmitFormApproved">Sprejmi</a>
+                <a href="#" class="btn btn-danger" @onclick="SubmitFormDenied">Zavrni</a>
+                <a href="#" class="btn btn-danger" @onclick="SubmitFormDeleted">Izbriši</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    public FormCard Forma { get; set; } = new FormCard();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Forma = await FormService.GetFormCard(Convert.ToString(Id));
+    }
+
+    protected async Task SubmitFormApproved()
+    {
+        var result = await FormService.UpdateFormCardApproved(Forma);
+    }
+
+    protected async Task SubmitFormDenied()
+    {
+        var result = await FormService.UpdateFormCardDenied(Forma);
+    }
+
+    protected async Task SubmitFormDeleted()
+    {
+        var result = await FormService.UpdateFormCardDenied(Forma);
+    }
+
+
+}

@@ -1,0 +1,91 @@
+﻿@page "/AddFormCard"
+
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using BlazorApp1.Database;
+
+@inject FormCardService formService
+@inject NavigationManager navigation
+
+@*<div class="card">
+    <h4 class="card-header">Dodajanje vlog za pridobitev kartice</h4>
+    <div class="card-body">
+     <form>
+      <div class="form-group">
+       <label for="Title">Naslov</label><br>
+       <input @bind:event="oninput" @bind="Title" class="form-control"><br>
+    </div>
+    <div class="form-group">
+       <label for="Education">Serijska st. forme</label><br>
+        <input @bind:event="oninput" @bind="SerialForm" class="form-control"><br>
+    </div>
+    <div class="form-group">
+       <label for="Experience">Domači naslov</label><br>
+       <input @bind:event="oninput" @bind="Address" class="form-control"><br>
+    </div>
+        <input type="submit" class="btn btn-primary" value="Potrdi" @onclick="HandleValidSubmitForm">
+     </form>
+    </div>
+</div>*@
+
+<div class="card">
+<h4 class="card-header">Dodajanje vlog za pridobitev kartice</h4>
+<div class="card-body">
+<EditForm Model="@model" OnValidSubmit="@HandleValidSubmitForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <p>
+        <label for="identifier">Ime forme: </label>
+        <InputText id="identifier" @bind-Value="model.Title" class="form-control" />
+    </p>
+    <p>
+        <label for="description">serijska st. prejsne forme: </label>
+        <InputText id="description" @bind-Value="model.IdForm" class="form-control" />
+    </p>
+    <p>
+        <label for="productionDate">Domači naslov: </label>
+        <InputText id="productionDate" @bind-Value="model.Address" class="form-control" />
+    </p>
+
+    <button type="submit" class="btn btn-primary">Potrdi</button>
+</EditForm>
+</div>
+</div>
+
+@code {
+    private FormContext Db = new FormContext();
+
+    private string Title { get; set; }
+    private string Address { get; set; }
+    private string TypeEven {get; set;}
+    private string SerialForm { get; set; }
+
+    private FormCard model = new();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async void HandleValidSubmitForm()
+    {
+        //model.Title = Title;
+        //model.Address = Address;
+        //model.IdForm = SerialForm;
+
+        await formService.AddFormCard(model);
+    }
+
+    public void navigatePage()
+    {
+         navigation.NavigateTo("/");
+    }
+
+
+    //public async void HandleValidSubmitFormCard()
+    //{
+    //    await FormCard.PostFormCard(Title, SerialForm, Address);
+    //}
+}

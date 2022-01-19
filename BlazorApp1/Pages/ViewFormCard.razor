@@ -1,0 +1,59 @@
+﻿@page "/ViewFormCard"
+
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using BlazorApp1.Database
+@using System.Net.Http.Json
+@inject HttpClient client
+@inject FormCardService FormCardService
+<h1>Oddane forme</h1>
+
+<p>Tukaj lahko pogledate oddane forme za kartice</p>
+
+@if (FormsList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Naslov</th>
+                <th>Domači naslov</th>
+                <th>Serijska st prejsne forme</th>
+                <th>Serijska stevilka</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forms in FormsList)
+            {
+                <tr>
+                    <td>@forms.Title</td>
+                    <td>@forms.Address</td>
+                    <td>@forms.IdForm</td>
+                    <td>@forms.SerialNumber</td>
+                    <td>@forms.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    public List<FormCard> FormsList = new List<FormCard>();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FormsList = (await FormCardService.GetFormsCard()).ToList();
+    }
+
+}

@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+<div class="page">
+    <div class="sidebar" style="background-image:none;background-color:cadetblue;">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>         
+        </div>
+        @if(!ConsentGiven)
+        {
+        <div class="alert alert-info">
+            Privolitev o piškotkih. S klikom na gumb sprejmi se strinjate z zbiranjem piškotkov.
+            <a href="/cookie/consent" class="btn btn-outline-secondary">Sprejmi</a>
+        </div> 
+        }    
+        <div class="content px-4">
+            @Body
+        </div>
+      
+    </div>
+</div>
+
+@code{
+    [CascadingParameter]
+    public bool ConsentGiven { get; set; }
+}

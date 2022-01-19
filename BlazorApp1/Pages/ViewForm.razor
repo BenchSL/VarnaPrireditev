@@ -1,0 +1,63 @@
+﻿@page "/ViewForm"
+
+@using BlazorApp1.Data
+@using BlazorApp1.Models
+@using BlazorApp1.Services
+@using BlazorApp1.Database
+@using System.Net.Http.Json
+@inject HttpClient client
+@inject FormInterService FormIntService
+<h1>Oddane forme</h1>
+
+<p>Tukaj lahko pogledate oddane forme</p>
+
+@if (FormsList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Naslov</th>
+                <th>Izobrazba</th>
+                <th>Izkušnje</th>
+                <th>Tip prireditve</th>
+                <th>Serijska številka</th>
+                <th>Id vlagatelja</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forms in FormsList)
+            {
+                <tr>
+                    <td>@forms.FormName</td>
+                    <td>@forms.UserEducation</td>
+                    <td>@forms.Experience</td>
+                    <td>@forms.EventType</td>
+                    <td>@forms.SerialNumber</td>
+                    <td>@forms.IdUser</td>
+                    <td>@forms.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    public List<Form> FormsList = new List<Form>();
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FormsList = (await FormIntService.GetForms()).ToList();
+    }
+
+}

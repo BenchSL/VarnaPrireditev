@@ -1,0 +1,56 @@
+﻿@page "/"
+
+@using BlazorApp1.Services
+@inject SessionService Session
+@inject PrivacyService Privacy
+@inject NavigationManager NavManager
+
+<div class="card">
+    <h4 class="card-header">
+       Pozdravljeni, <br />
+       @Session.SessionName
+    </h4>
+    <div class="card-body">
+   @if(Session.SessionName == "User")
+   {
+   <h4>Pozdravljeni v naši spletni aplikaciji za dodajanje vlog.</h4> <br />
+   <p>
+    <h4>Kot uporabnik lahko dodajate nove vloge za pridobitev dovoljenja za delo!</h4><br />
+    <h4>Kot uporabnik lahko dodajate tudi nove vloge za pridobitev Vaše lastne Identifikacijske kartice!</h4><br />
+   </p>
+   }
+
+   @if(Session.SessionName == "Tim")
+   {
+   <h4>Pozdravljeni v naši spletni aplikaciji. Vi ste administrator!</h4> <br />
+   <p>
+    <h4>Kot administrator lahko urejate vloge za pridobitev dovoljenja za delo!</h4><br />
+    <h4>Kot administrator lahko urejate tudi vloge za pridobitev Identifikacijske kartice!</h4><br />
+   </p>
+    }
+    </div>
+    <div class="card-footer">
+        <SurveyPrompt Title="Kako se vam zdi naša aplikacija?" />
+    </div>  
+    @if(Privacy.PrivacyStatus != "Accepted")
+    {
+        <div id="mainFrameOne" class="alert alert-info">
+            Privolitev pravilnika o zasebnosti <br />
+            Apikacija zbira podatke, ki so potrebni za delovanje naše aplikacije in analizo <br />
+            Aplikacija se ne personalizira glede na vašo zgodovino iskanja <br />
+            Aplikacija ne uporablja piškotkov, ki bi lahko idenficirali uporabnika <br />
+            Na aplikacijo je možna povezava samo z varno HTTPS povezavo. To nam omogoča zagotovilo, da nihče ne more prisluškovati vaši komunikaciji. <br/>
+            <button class="btn btn-outline-secondary" @onclick="@(() => {HandleValidPrivacy();})">Accept</button>
+        </div> 
+    }   
+</div>
+
+@code{
+    public async void HandleValidPrivacy()
+    {
+        Privacy.PrivacyStatus = "Accepted";
+        await Task.Delay(0);
+        NavManager.NavigateTo("/");
+    }
+
+}
